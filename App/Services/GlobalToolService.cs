@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Immutable;
 using App.Extensions;
 using App.Helpers;
 using Microsoft.Extensions.Logging;
@@ -9,11 +8,13 @@ namespace App.Services;
 public class GlobalToolService : IGlobalToolService
 {
     private readonly IProcessHelper _processHelper;
+    private readonly IRandomHelper _randomHelper;
     private readonly ILogger _logger;
 
-    public GlobalToolService(IProcessHelper processHelper, ILogger logger)
+    public GlobalToolService(IProcessHelper processHelper, IRandomHelper randomHelper, ILogger logger)
     {
         _processHelper = processHelper ?? throw new ArgumentNullException(nameof(processHelper));
+        _randomHelper = randomHelper ?? throw new ArgumentNullException(nameof(randomHelper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -34,7 +35,29 @@ public class GlobalToolService : IGlobalToolService
         var globalTools = queue
             .Where(x => pattern is null || x.IsMatchingPattern(pattern))
             .OrderBy(x => x.Id)
-            .ToImmutableList();
+            .ToList();
+        return globalTools;
+    }
+
+    public async Task<ICollection<GlobalTool>> SearchGlobalToolsAsync(GlobalToolsParameters parameters, CancellationToken cancellationToken = default)
+    {
+        const string name = @"dotnet";
+        var arguments = !string.IsNullOrWhiteSpace(parameters.Pattern)
+            ? $"tool search {parameters.Pattern} --prerelease --take 1000"
+            : $"tool search {_randomHelper.RandomCharacter()} --prerelease --take 1000";
+        var queue = new ConcurrentQueue<GlobalTool>();
+        await _processHelper.RunProcessAsync(name, arguments, (_, args) =>
+        {
+            var message = args.Data;
+            var globalTool = ExtractGlobalTool(message);
+            if (globalTool == null) return;
+            queue.Enqueue(globalTool);
+        }, cancellationToken);
+
+        var globalTools = queue
+            .OrderBy(x => Guid.NewGuid())
+            .Take(parameters.MaxItems)
+            .ToList();
         return globalTools;
     }
 
@@ -111,20 +134,35 @@ public class GlobalToolService : IGlobalToolService
     private static GlobalTool ExtractGlobalTool(string message)
     {
         if (string.IsNullOrWhiteSpace(message)) return null;
+        if (message.IgnoreCaseContains("Package ID")) return null;
 
-        const string separator = " ";
+        const string separator = "  ";
         var parts = message
             .Split(separator)
             .Where(x => !string.IsNullOrWhiteSpace(x))
             .ToArray();
 
-        if (parts.Length != 3) return null;
-
-        return new GlobalTool
+        if (parts.Length == 3)
         {
-            Id = parts[0],
-            Version = parts[1],
-            Command = parts[2]
-        };
+            return new GlobalTool
+            {
+                Id = parts[0],
+                Version = parts[1],
+                Command = parts[2]
+            };
+        }
+
+        if (parts.Length >= 4)
+        {
+            return new GlobalTool
+            {
+                Id = parts[0],
+                Version = parts[1],
+                Authors = parts[2],
+                Downloads = parts[3]
+            };
+        }
+
+        return null;
     }
 }

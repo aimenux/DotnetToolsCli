@@ -6,5 +6,7 @@ public class GlobalToolsParameters
 
     public string Pattern { get; set; }
 
+    public int MaxItems { get; set; }
+
     public string NugetConfigFile { get; set; }
 }

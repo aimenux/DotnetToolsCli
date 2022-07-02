@@ -10,6 +10,10 @@ public class GlobalTool
 
     public string Command { get; set; }
 
+    public string Authors { get; set; }
+
+    public string Downloads { get; set; }
+
     public bool IsCurrentTool => string.Equals(Id, Settings.PackageId, StringComparison.OrdinalIgnoreCase);
 
     public bool IsMatchingPattern(string pattern)

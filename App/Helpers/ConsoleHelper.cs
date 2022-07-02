@@ -70,44 +70,65 @@ public class ConsoleHelper : IConsoleHelper
 
     public void RenderGlobalTools(ICollection<GlobalTool> globalTools, GlobalToolsParameters parameters)
     {
-        var pattern = parameters.Pattern;
-        var filteredGlobalTools = globalTools
-            .Where(x => pattern is null || x.IsMatchingPattern(pattern))
-            .ToList();
+        var count = globalTools.Count;
 
-        var count = filteredGlobalTools.Count;
-
-        var table = new Table()
-            .Border(TableBorder.Square)
-            .BorderColor(Color.White)
-            .Title($"[yellow]Found {count} global tool(s)[/]")
-            .AddColumn(new TableColumn("[u]Id[/]").Centered())
-            .AddColumn(new TableColumn("[u]CommandName[/]").Centered())
-            .AddColumn(new TableColumn("[u]CurrentVersion[/]").Centered());
-
-        if (pattern != null)
+        var isSearch = parameters.MaxItems > 0 || globalTools.Any(x => !string.IsNullOrWhiteSpace(x.Downloads));
+        if (isSearch)
         {
-            table.Caption($"Pattern is '{pattern}'");
-        }
+            var table = new Table()
+                .Border(TableBorder.Square)
+                .BorderColor(Color.White)
+                .Title($"[yellow]Found {count} global tool(s)[/]")
+                .AddColumn(new TableColumn("[u]Id[/]").Centered())
+                .AddColumn(new TableColumn("[u]LatestVersion[/]").Centered())
+                .AddColumn(new TableColumn("[u]Authors[/]").Centered())
+                .AddColumn(new TableColumn("[u]Downloads[/]").Centered());
 
-        foreach (var globalTool in filteredGlobalTools)
+            var pattern = parameters.Pattern;
+            if (pattern != null)
+            {
+                table.Caption($"Pattern is '{pattern}'");
+            }
+
+            foreach (var globalTool in globalTools)
+            {
+                table.AddRow(globalTool.Id.ToMarkup(), globalTool.Version.ToMarkup(), globalTool.Authors.ToMarkup(), globalTool.Downloads.ToMarkup());
+            }
+
+            AnsiConsole.WriteLine();
+            AnsiConsole.Write(table);
+            AnsiConsole.WriteLine();
+        }
+        else
         {
-            table.AddRow(globalTool.Id.ToMarkup(), globalTool.Command.ToMarkup(), globalTool.Version.ToMarkup());
-        }
+            var table = new Table()
+                .Border(TableBorder.Square)
+                .BorderColor(Color.White)
+                .Title($"[yellow]Found {count} global tool(s)[/]")
+                .AddColumn(new TableColumn("[u]Id[/]").Centered())
+                .AddColumn(new TableColumn("[u]CommandName[/]").Centered())
+                .AddColumn(new TableColumn("[u]CurrentVersion[/]").Centered());
 
-        AnsiConsole.WriteLine();
-        AnsiConsole.Write(table);
-        AnsiConsole.WriteLine();
+            var pattern = parameters.Pattern;
+            if (pattern != null)
+            {
+                table.Caption($"Pattern is '{pattern}'");
+            }
+
+            foreach (var globalTool in globalTools)
+            {
+                table.AddRow(globalTool.Id.ToMarkup(), globalTool.Command.ToMarkup(), globalTool.Version.ToMarkup());
+            }
+
+            AnsiConsole.WriteLine();
+            AnsiConsole.Write(table);
+            AnsiConsole.WriteLine();
+        }
     }
 
     public void RenderGlobalTools(ICollection<GlobalTool> globalToolsBefore, ICollection<GlobalTool> globalToolsAfter, GlobalToolsParameters parameters)
     {
-        var pattern = parameters.Pattern;
-        var filteredGlobalTools = globalToolsBefore
-            .Where(x => pattern is null || x.IsMatchingPattern(pattern))
-            .ToList();
-
-        var count = filteredGlobalTools.Count;
+        var count = globalToolsBefore.Count;
 
         var table = new Table()
             .Border(TableBorder.Square)
@@ -118,12 +139,13 @@ public class ConsoleHelper : IConsoleHelper
             .AddColumn(new TableColumn("[u]PreviousVersion[/]").Centered())
             .AddColumn(new TableColumn("[u]CurrentVersion[/]").Centered());
 
+        var pattern = parameters.Pattern;
         if (pattern != null)
         {
             table.Caption($"Pattern is '{pattern}'");
         }
 
-        foreach (var globalToolBefore in filteredGlobalTools)
+        foreach (var globalToolBefore in globalToolsBefore)
         {
             var currentVersion = GetCurrentVersion(globalToolsAfter, globalToolBefore);
             table.AddRow(globalToolBefore.Id.ToMarkup(), globalToolBefore.Command.ToMarkup(), globalToolBefore.Version.ToMarkup(), currentVersion.ToMarkup());
