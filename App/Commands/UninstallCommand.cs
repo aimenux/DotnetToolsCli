@@ -13,7 +13,7 @@ public class UninstallCommand : AbstractCommand
     private readonly IGlobalToolService _globalToolService;
     private readonly ILogger _logger;
 
-    public UninstallCommand(IConsoleHelper consoleHelper, IGlobalToolService globalToolService, ILogger logger) : base(consoleHelper)
+    public UninstallCommand(IConsoleHelper consoleHelper, ILoggingHelper loggingHelper, IGlobalToolService globalToolService, ILogger logger) : base(consoleHelper, loggingHelper)
     {
         _globalToolService = globalToolService ?? throw new ArgumentNullException(nameof(globalToolService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -30,10 +30,11 @@ public class UninstallCommand : AbstractCommand
     {
         var parameters = new GlobalToolsParameters
         {
-            Ids = Ids,
-            Verbose = Verbose
+            Ids = Ids
         };
+
         var globalTools = await _globalToolService.UninstallGlobalToolsAsync(parameters, cancellationToken);
+
         ConsoleHelper.RenderGlobalTools(globalTools, parameters);
     }
 
@@ -47,6 +48,8 @@ public class UninstallCommand : AbstractCommand
 
         return true;
     }
+
+    protected override bool IsVerboseLoggingEnabled() => Verbose;
 
     private static string GetVersion() => GetVersion(typeof(UninstallCommand));
 }

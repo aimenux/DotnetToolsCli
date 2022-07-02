@@ -10,7 +10,7 @@ public class ListCommand : AbstractCommand
 {
     private readonly IGlobalToolService _globalToolService;
 
-    public ListCommand(IConsoleHelper consoleHelper, IGlobalToolService globalToolService) : base(consoleHelper)
+    public ListCommand(IConsoleHelper consoleHelper, ILoggingHelper loggingHelper, IGlobalToolService globalToolService) : base(consoleHelper, loggingHelper)
     {
         _globalToolService = globalToolService ?? throw new ArgumentNullException(nameof(globalToolService));
     }
@@ -24,7 +24,9 @@ public class ListCommand : AbstractCommand
         {
             Pattern = Pattern
         };
+
         var globalTools = await _globalToolService.GetGlobalToolsAsync(parameters, cancellationToken);
+
         ConsoleHelper.RenderGlobalTools(globalTools, parameters);
     }
 

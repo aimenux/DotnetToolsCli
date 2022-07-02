@@ -9,7 +9,7 @@ namespace App.Commands;
 [VersionOptionFromMember(MemberName = nameof(GetVersion))]
 public class MainCommand : AbstractCommand
 {
-    public MainCommand(IConsoleHelper consoleHelper) : base(consoleHelper)
+    public MainCommand(IConsoleHelper consoleHelper, ILoggingHelper loggingHelper) : base(consoleHelper, loggingHelper)
     {
     }
 

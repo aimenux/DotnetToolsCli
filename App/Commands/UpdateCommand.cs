@@ -12,7 +12,7 @@ public class UpdateCommand : AbstractCommand
     private readonly IGlobalToolService _globalToolService;
     private readonly ILogger _logger;
 
-    public UpdateCommand(IConsoleHelper consoleHelper, IGlobalToolService globalToolService, ILogger logger) : base(consoleHelper)
+    public UpdateCommand(IConsoleHelper consoleHelper, ILoggingHelper loggingHelper, IGlobalToolService globalToolService, ILogger logger) : base(consoleHelper, loggingHelper)
     {
         _globalToolService = globalToolService ?? throw new ArgumentNullException(nameof(globalToolService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -31,11 +31,12 @@ public class UpdateCommand : AbstractCommand
     {
         var parameters = new GlobalToolsParameters
         {
-            Verbose = Verbose,
             Pattern = Pattern,
             NugetConfigFile = NugetConfigFile
         };
+
         var (globalToolsBefore, globalToolsAfter) = await _globalToolService.UpdateGlobalToolsAsync(parameters, cancellationToken);
+
         ConsoleHelper.RenderGlobalTools(globalToolsBefore, globalToolsAfter, parameters);
     }
 
@@ -55,6 +56,8 @@ public class UpdateCommand : AbstractCommand
 
         return true;
     }
+
+    protected override bool IsVerboseLoggingEnabled() => Verbose;
 
     private static string GetVersion() => GetVersion(typeof(UpdateCommand));
 }

@@ -3,20 +3,17 @@ using System.Collections.Immutable;
 using App.Extensions;
 using App.Helpers;
 using Microsoft.Extensions.Logging;
-using Serilog.Events;
 
 namespace App.Services;
 
 public class GlobalToolService : IGlobalToolService
 {
     private readonly IProcessHelper _processHelper;
-    private readonly ILoggingHelper _loggingHelper;
     private readonly ILogger _logger;
 
-    public GlobalToolService(IProcessHelper processHelper, ILoggingHelper loggingHelper, ILogger logger)
+    public GlobalToolService(IProcessHelper processHelper, ILogger logger)
     {
         _processHelper = processHelper ?? throw new ArgumentNullException(nameof(processHelper));
-        _loggingHelper = loggingHelper ?? throw new ArgumentNullException(nameof(loggingHelper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -43,15 +40,12 @@ public class GlobalToolService : IGlobalToolService
 
     public async Task<ICollection<GlobalTool>> InstallGlobalToolsAsync(GlobalToolsParameters parameters, CancellationToken cancellationToken)
     {
-        if (parameters.Verbose)
-        {
-            _loggingHelper.SetMinimumLevel(LogEventLevel.Verbose);
-        }
-
         const string name = @"dotnet";
         var arguments = File.Exists(parameters.NugetConfigFile)
             ? $"tool install -g {{0}} --version *-* --ignore-failed-sources --configfile {parameters.NugetConfigFile}"
             : @"tool install -g {0} --version *-* --ignore-failed-sources";
+
+        _logger.LogEmptyLineWhenLogLevelIsEnabled(LogLevel.Information);
 
         var ids = parameters.Ids.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
         foreach (var id in ids)
@@ -71,15 +65,12 @@ public class GlobalToolService : IGlobalToolService
 
     public async Task<ICollection<GlobalTool>> UninstallGlobalToolsAsync(GlobalToolsParameters parameters, CancellationToken cancellationToken)
     {
-        if (parameters.Verbose)
-        {
-            _loggingHelper.SetMinimumLevel(LogEventLevel.Verbose);
-        }
-
         var globalTools = await GetGlobalToolsAsync(parameters, cancellationToken);
 
         const string name = @"dotnet";
         const string arguments = @"tool uninstall -g {0}";
+
+        _logger.LogEmptyLineWhenLogLevelIsEnabled(LogLevel.Information);
 
         var ids = parameters.Ids.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
         foreach (var id in ids)
@@ -98,17 +89,14 @@ public class GlobalToolService : IGlobalToolService
 
     public async Task<(ICollection<GlobalTool>, ICollection<GlobalTool>)> UpdateGlobalToolsAsync(GlobalToolsParameters parameters, CancellationToken cancellationToken)
     {
-        if (parameters.Verbose)
-        {
-            _loggingHelper.SetMinimumLevel(LogEventLevel.Verbose);
-        }
-
         var globalToolsBefore = await GetGlobalToolsAsync(parameters, cancellationToken);
 
         const string name = @"dotnet";
         var arguments = File.Exists(parameters.NugetConfigFile)
             ? $"tool update -g {{0}} --version *-* --ignore-failed-sources --configfile {parameters.NugetConfigFile}"
             : @"tool update -g {0} --version *-* --ignore-failed-sources";
+
+        _logger.LogEmptyLineWhenLogLevelIsEnabled(LogLevel.Information);
 
         foreach (var globalToolBefore in globalToolsBefore.Where(x => !x.IsCurrentTool))
         {

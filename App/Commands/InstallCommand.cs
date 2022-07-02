@@ -13,7 +13,7 @@ public class InstallCommand : AbstractCommand
     private readonly IGlobalToolService _globalToolService;
     private readonly ILogger _logger;
 
-    public InstallCommand(IConsoleHelper consoleHelper, IGlobalToolService globalToolService, ILogger logger) : base(consoleHelper)
+    public InstallCommand(IConsoleHelper consoleHelper, ILoggingHelper loggingHelper, IGlobalToolService globalToolService, ILogger logger) : base(consoleHelper, loggingHelper)
     {
         _globalToolService = globalToolService ?? throw new ArgumentNullException(nameof(globalToolService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -34,10 +34,11 @@ public class InstallCommand : AbstractCommand
         var parameters = new GlobalToolsParameters
         {
             Ids = Ids,
-            Verbose = Verbose,
             NugetConfigFile = NugetConfigFile
         };
+
         var globalTools = await _globalToolService.InstallGlobalToolsAsync(parameters, cancellationToken);
+
         ConsoleHelper.RenderGlobalTools(globalTools, parameters);
     }
 
@@ -57,6 +58,8 @@ public class InstallCommand : AbstractCommand
 
         return true;
     }
+
+    protected override bool IsVerboseLoggingEnabled() => Verbose;
 
     private static string GetVersion() => GetVersion(typeof(InstallCommand));
 }

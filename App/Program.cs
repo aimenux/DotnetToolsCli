@@ -18,8 +18,7 @@ public static class Program
         }
         catch (Exception ex)
         {
-            var consoleHelper = new ConsoleHelper();
-            consoleHelper.RenderException(ex);
+            ConsoleHelper.RenderAnyException(ex);
         }
     }
 

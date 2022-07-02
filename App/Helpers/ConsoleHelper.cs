@@ -7,11 +7,16 @@ namespace App.Helpers;
 
 public class ConsoleHelper : IConsoleHelper
 {
-    private static readonly IRandomHelper RandomHelper = new RandomHelper();
+    private readonly IRandomHelper _randomHelper;
 
-    public ConsoleHelper()
+    protected ConsoleHelper()
     {
         Console.OutputEncoding = Encoding.UTF8;
+    }
+
+    public ConsoleHelper(IRandomHelper randomHelper) : this()
+    {
+        _randomHelper = randomHelper ?? throw new ArgumentNullException(nameof(randomHelper));
     }
 
     public void RenderTitle(string text)
@@ -23,7 +28,7 @@ public class ConsoleHelper : IConsoleHelper
 
     public async Task RenderStatusAsync(Func<Task> action)
     {
-        var spinner = RandomHelper.RandomSpinner();
+        var spinner = _randomHelper.RandomSpinner();
 
         await AnsiConsole.Status()
             .StartAsync("Work is in progress ...", async ctx =>
@@ -50,7 +55,9 @@ public class ConsoleHelper : IConsoleHelper
         AnsiConsole.WriteLine();
     }
 
-    public void RenderException(Exception exception)
+    public void RenderException(Exception exception) => RenderAnyException(exception);
+
+    public static void RenderAnyException<T>(T exception) where T : Exception
     {
         const ExceptionFormats formats = ExceptionFormats.ShortenTypes
                                          | ExceptionFormats.ShortenPaths

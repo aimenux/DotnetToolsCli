@@ -4,7 +4,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Debugging;
+using Spectre.Console;
 using static App.Extensions.PathExtensions;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace App.Extensions;
 
@@ -45,5 +47,13 @@ public static class LoggingExtensions
                     .MinimumLevel.ControlledBy(loggingHelper.LevelSwitch);
             }
         });
+    }
+
+    public static void LogEmptyLineWhenLogLevelIsEnabled(this ILogger logger, LogLevel logeLevel)
+    {
+        if (logger.IsEnabled(logeLevel))
+        {
+            AnsiConsole.WriteLine();
+        }
     }
 }
