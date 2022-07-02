@@ -41,7 +41,7 @@ public class GlobalToolService : IGlobalToolService
         return globalTools;
     }
 
-    public async Task<ICollection<GlobalTool>> InstallGlobalToolsAsync(GlobalToolsParameters parameters, CancellationToken cancellationToken = default)
+    public async Task<ICollection<GlobalTool>> InstallGlobalToolsAsync(GlobalToolsParameters parameters, CancellationToken cancellationToken)
     {
         if (parameters.Verbose)
         {
@@ -50,7 +50,7 @@ public class GlobalToolService : IGlobalToolService
 
         const string name = @"dotnet";
         var arguments = File.Exists(parameters.NugetConfigFile)
-            ? $"tool install -g {{0}} --version *-* --configfile {parameters.NugetConfigFile}"
+            ? $"tool install -g {{0}} --version *-* --ignore-failed-sources --configfile {parameters.NugetConfigFile}"
             : @"tool install -g {0} --version *-* --ignore-failed-sources";
 
         var ids = parameters.Ids.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
@@ -69,7 +69,7 @@ public class GlobalToolService : IGlobalToolService
         return installedGlobalTools;
     }
 
-    public async Task<ICollection<GlobalTool>> UninstallGlobalToolsAsync(GlobalToolsParameters parameters, CancellationToken cancellationToken = default)
+    public async Task<ICollection<GlobalTool>> UninstallGlobalToolsAsync(GlobalToolsParameters parameters, CancellationToken cancellationToken)
     {
         if (parameters.Verbose)
         {
@@ -96,7 +96,7 @@ public class GlobalToolService : IGlobalToolService
         return uninstalledGlobalTools;
     }
 
-    public async Task<(ICollection<GlobalTool>, ICollection<GlobalTool>)> UpdateGlobalToolsAsync(GlobalToolsParameters parameters, CancellationToken cancellationToken = default)
+    public async Task<(ICollection<GlobalTool>, ICollection<GlobalTool>)> UpdateGlobalToolsAsync(GlobalToolsParameters parameters, CancellationToken cancellationToken)
     {
         if (parameters.Verbose)
         {
@@ -107,7 +107,7 @@ public class GlobalToolService : IGlobalToolService
 
         const string name = @"dotnet";
         var arguments = File.Exists(parameters.NugetConfigFile)
-            ? $"tool update -g {{0}} --version *-* --configfile {parameters.NugetConfigFile}"
+            ? $"tool update -g {{0}} --version *-* --ignore-failed-sources --configfile {parameters.NugetConfigFile}"
             : @"tool update -g {0} --version *-* --ignore-failed-sources";
 
         foreach (var globalToolBefore in globalToolsBefore.Where(x => !x.IsCurrentTool))
