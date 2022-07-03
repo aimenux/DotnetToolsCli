@@ -8,14 +8,16 @@ namespace App.Commands;
 public abstract class AbstractCommand
 {
     protected IConsoleHelper ConsoleHelper;
-    private readonly ILoggingHelper _loggingHelper;
+    protected ILoggingHelper LoggingHelper;
+    protected IFileHelper FileHelper;
 
     protected string CommandName => GetType().Name;
 
-    protected AbstractCommand(IConsoleHelper consoleHelper, ILoggingHelper loggingHelper)
+    protected AbstractCommand(IConsoleHelper consoleHelper, ILoggingHelper loggingHelper, IFileHelper fileHelper)
     {
         ConsoleHelper = consoleHelper ?? throw new ArgumentNullException(nameof(consoleHelper));
-        _loggingHelper = loggingHelper ?? throw new ArgumentNullException(nameof(loggingHelper));
+        LoggingHelper = loggingHelper ?? throw new ArgumentNullException(nameof(loggingHelper));
+        FileHelper = fileHelper ?? throw new ArgumentNullException(nameof(fileHelper));
     }
 
     public async Task OnExecuteAsync(CommandLineApplication app, CancellationToken cancellationToken = default)
@@ -34,14 +36,14 @@ public abstract class AbstractCommand
 
             if (IsVerboseLoggingEnabled())
             {
-                _loggingHelper.SetMinimumLevel(LogEventLevel.Verbose);
+                LoggingHelper.SetMinimumLevel(LogEventLevel.Verbose);
             }
 
             await ExecuteAsync(app, cancellationToken);
 
             if (IsVerboseLoggingEnabled())
             {
-                _loggingHelper.SetMinimumLevelFromConfiguration();
+                LoggingHelper.SetMinimumLevelFromConfiguration();
             }
         }
         catch (Exception ex)

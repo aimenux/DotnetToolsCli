@@ -12,7 +12,7 @@ public class UpdateCommand : AbstractCommand
     private readonly IGlobalToolService _globalToolService;
     private readonly ILogger _logger;
 
-    public UpdateCommand(IConsoleHelper consoleHelper, ILoggingHelper loggingHelper, IGlobalToolService globalToolService, ILogger logger) : base(consoleHelper, loggingHelper)
+    public UpdateCommand(IConsoleHelper consoleHelper, ILoggingHelper loggingHelper, IFileHelper fileHelper, IGlobalToolService globalToolService, ILogger logger) : base(consoleHelper, loggingHelper, fileHelper)
     {
         _globalToolService = globalToolService ?? throw new ArgumentNullException(nameof(globalToolService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

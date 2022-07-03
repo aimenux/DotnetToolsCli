@@ -71,6 +71,7 @@ public class ConsoleHelper : IConsoleHelper
     public void RenderGlobalTools(ICollection<GlobalTool> globalTools, GlobalToolsParameters parameters)
     {
         var count = globalTools.Count;
+        var caption = BuildCustomCaption(parameters);
 
         var isSearch = parameters.MaxItems > 0 || globalTools.Any(x => !string.IsNullOrWhiteSpace(x.Downloads));
         if (isSearch)
@@ -84,10 +85,9 @@ public class ConsoleHelper : IConsoleHelper
                 .AddColumn(new TableColumn("[u]Authors[/]").Centered())
                 .AddColumn(new TableColumn("[u]Downloads[/]").Centered());
 
-            var pattern = parameters.Pattern;
-            if (pattern != null)
+            if (!string.IsNullOrWhiteSpace(caption))
             {
-                table.Caption($"Pattern is '{pattern}'");
+                table.Caption(caption);
             }
 
             foreach (var globalTool in globalTools)
@@ -109,10 +109,9 @@ public class ConsoleHelper : IConsoleHelper
                 .AddColumn(new TableColumn("[u]CommandName[/]").Centered())
                 .AddColumn(new TableColumn("[u]CurrentVersion[/]").Centered());
 
-            var pattern = parameters.Pattern;
-            if (pattern != null)
+            if (!string.IsNullOrWhiteSpace(caption))
             {
-                table.Caption($"Pattern is '{pattern}'");
+                table.Caption(caption);
             }
 
             foreach (var globalTool in globalTools)
@@ -162,5 +161,28 @@ public class ConsoleHelper : IConsoleHelper
         var after = globalToolsAfter.FirstOrDefault(x => x.Id == before.Id);
         var currentVersion = after?.Version ?? previousVersion;
         return currentVersion != previousVersion ? $"[green]{currentVersion}[/]" : currentVersion;
+    }
+
+    private static string BuildCustomCaption(GlobalToolsParameters parameters)
+    {
+        var pattern = parameters.Pattern;
+        var exportFile = parameters.ExportFile;
+        var captionBuilder = new StringBuilder();
+
+        if (pattern != null)
+        {
+            captionBuilder.Append($"Pattern is '{pattern}'");
+            if (exportFile != null)
+            {
+                captionBuilder.AppendLine();
+            }
+        }
+        if (exportFile != null)
+        {
+            captionBuilder.Append($"ExportFile is '[u][b][grey][link={exportFile}]{exportFile}[/][/][/][/]'");
+        }
+
+        var caption = captionBuilder.ToString();
+        return caption;
     }
 }

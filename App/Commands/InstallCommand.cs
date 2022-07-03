@@ -13,7 +13,7 @@ public class InstallCommand : AbstractCommand
     private readonly IGlobalToolService _globalToolService;
     private readonly ILogger _logger;
 
-    public InstallCommand(IConsoleHelper consoleHelper, ILoggingHelper loggingHelper, IGlobalToolService globalToolService, ILogger logger) : base(consoleHelper, loggingHelper)
+    public InstallCommand(IConsoleHelper consoleHelper, ILoggingHelper loggingHelper, IFileHelper fileHelper, IGlobalToolService globalToolService, ILogger logger) : base(consoleHelper, loggingHelper, fileHelper)
     {
         _globalToolService = globalToolService ?? throw new ArgumentNullException(nameof(globalToolService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -26,14 +26,16 @@ public class InstallCommand : AbstractCommand
     public string NugetConfigFile { get; set; }
 
     [Required]
-    [Argument(0, nameof(Ids))]
+    [Argument(0, nameof(Ids), "Tool(s) Id(s) or ExportFile(s)")]
     public string[] Ids { get; set; }
 
     protected override async Task ExecuteAsync(CommandLineApplication app, CancellationToken cancellationToken = default)
     {
+        var ids = await FileHelper.ExtractGlobalToolsIdsAsync(Ids, cancellationToken);
+
         var parameters = new GlobalToolsParameters
         {
-            Ids = Ids,
+            Ids = ids,
             NugetConfigFile = NugetConfigFile
         };
 
