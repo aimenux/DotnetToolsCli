@@ -5,17 +5,23 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Version>0.0.1-alpha</Version>
-		<Authors>aimenux</Authors>
+		<Authors>Aymen TROUDI</Authors>
 		<PackAsTool>true</PackAsTool>
 		<PackageId>DotnetToolsCli</PackageId>
 		<PackageOutputPath>../Nugets</PackageOutputPath>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<ToolCommandName>Dotnet-Tools</ToolCommandName>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Description>A net global tool helping to manage all net global tools</Description>
-		<PackageTags>Dotnet-Global-Tools</PackageTags>
+		<PackageTags>dotnet, global tools, cli</PackageTags>
 		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl>https://github.com/aimenux/GlobalToolsCli</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/aimenux/DotnetToolsCli</PackageProjectUrl>
+		<RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<UserSecretsId>DotnetToolsCli-UserSecrets</UserSecretsId>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 	</PropertyGroup>
 
 	<ItemGroup>

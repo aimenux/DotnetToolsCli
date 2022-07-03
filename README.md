@@ -1,3 +1,5 @@
+[![.NET](https://github.com/aimenux/DotnetToolsCli/actions/workflows/ci.yml/badge.svg)](https://github.com/aimenux/DotnetToolsCli/actions/workflows/ci.yml)
+
 # DotnetToolsCli
 ```
 Providing a net global tool to manage all other global tools
