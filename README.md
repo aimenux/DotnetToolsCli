@@ -1,24 +1,36 @@
 # DotnetToolsCli
 ```
-A net global tool to manage all other global tools
+Providing a net global tool to manage all other global tools
 ```
 
-> In this repo, i m building a global tool that allows to list, update, install or uninstall net global tools.
+> In this repo, i m building a global tool that allows to handle all other global tools.
 >
-> To uninstall, install, run, update, uninstall global tool from a local source path, type commands :
-> - `dotnet tool uninstall -g DotnetToolsCli`
-> - `dotnet tool install -g DotnetToolsCli --version *-* --ignore-failed-sources --configfile .\Nugets\local.config`
-> - `dotnet-tools`
-> - `dotnet-tools -h`
-> - `dotnet-tools list`
-> - `dotnet-tools update`
-> - `dotnet-tools install [id]`
-> - `dotnet-tools uninstall [id]`
+> The tool is based on multiple sub commmands :
+> - Use sub command `List` to list installed global tools
+> - Use sub command `Search` to search global tools published on [nuget](https://www.nuget.org/packages?packagetype=dotnettool)
+> - Use sub command `Update` to update installed global tools
+> - Use sub command `Install` to install global tools
+> - Use sub command `Uninstall` to uninstall global tools
+>
+> To run the tool, type commands :
+> - `dotnet-tools -h` to show help
+> - `dotnet-tools -s` to show settings
+> - `dotnet-tools List` to list installed global tools
+> - `dotnet-tools List -p [pattern]` to list installed global tools matching pattern
+> - `dotnet-tools Search` to search public global tools
+> - `dotnet-tools Search -p [pattern]` to search public global tools matching pattern
+> - `dotnet-tools Update` to update installed global tools
+> - `dotnet-tools Update -p [pattern]` to update installed global tools matching pattern
+> - `dotnet-tools Install [id]` to install global tools
+> - `dotnet-tools Uninstall [id]` to uninstall global tools
 >
 > To install global tool from [nuget source](https://www.nuget.org/packages/DotnetToolsCli), type these command :
-> - for beta versions : `dotnet tool install -g DotnetToolsCli --version *-* --ignore-failed-sources`
-> - for stable versions : `dotnet tool install -g DotnetToolsCli --ignore-failed-sources`
+> - For stable version : `dotnet tool install -g DotnetToolsCli --ignore-failed-sources`
+> - For prerelease version : `dotnet tool install -g DotnetToolsCli --version "*-*" --ignore-failed-sources`
+>
+> To uninstall global tool, type these command :
+> - `dotnet tool uninstall -g DotnetToolsCli`
 >
 >
 
-**`Tools`** : vs22, net 6.0
+**`Tools`** : vs22, net 6.0, command-line, spectre-console
