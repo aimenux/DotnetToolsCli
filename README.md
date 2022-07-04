@@ -5,7 +5,7 @@
 Providing a net global tool to manage all other global tools
 ```
 
-> In this repo, i m building a global tool that allows to handle all other global tools.
+> In this repo, i m building a global tool that allows to manage all other global tools.
 >
 > The tool is based on multiple sub commmands :
 > - Use sub command `List` to list installed global tools
