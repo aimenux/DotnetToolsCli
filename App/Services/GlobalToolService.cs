@@ -22,17 +22,17 @@ public class GlobalToolService : IGlobalToolService
     {
         const string name = @"dotnet";
         const string arguments = @"tool list -g";
-        var queue = new ConcurrentQueue<GlobalTool>();
+        var cache = new ConcurrentDictionary<string, GlobalTool>(StringComparer.OrdinalIgnoreCase);
         await _processHelper.RunProcessAsync(name, arguments, (_, args) =>
         {
             var message = args.Data;
             var globalTool = ExtractGlobalTool(message);
             if (globalTool == null) return;
-            queue.Enqueue(globalTool);
+            cache.TryAdd(globalTool.Id, globalTool);
         }, cancellationToken);
 
         var pattern = parameters.Pattern;
-        var globalTools = queue
+        var globalTools = cache.Values
             .Where(x => pattern is null || x.IsMatchingPattern(pattern))
             .OrderBy(x => x.Id)
             .ToList();
@@ -41,17 +41,17 @@ public class GlobalToolService : IGlobalToolService
 
     public async Task<ICollection<GlobalTool>> SearchGlobalToolsAsync(GlobalToolsParameters parameters, CancellationToken cancellationToken = default)
     {
-        const int size = 20;
+        const int pageSize = 20;
         const string name = @"dotnet";
         var max = parameters.MaxItems;
         var pattern = parameters.Pattern;
         var cache = new ConcurrentDictionary<string, GlobalTool>(StringComparer.OrdinalIgnoreCase);
 
-        for (var skip = 0; skip < max; skip += size)
+        for (var skip = 0; skip < max; skip += pageSize)
         {
             var arguments = !string.IsNullOrWhiteSpace(pattern)
-                ? $"tool search {parameters.Pattern} --prerelease --take {size} --skip {skip}"
-                : $"tool search {_randomHelper.RandomCharacter()} --prerelease --take {size} --skip {skip}";
+                ? $"tool search {parameters.Pattern} --prerelease --take {pageSize} --skip {skip}"
+                : $"tool search {_randomHelper.RandomCharacter()} --prerelease --take {pageSize} --skip {skip}";
 
             await _processHelper.RunProcessAsync(name, arguments, (_, args) =>
             {
