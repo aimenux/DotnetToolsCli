@@ -26,6 +26,9 @@ Providing a net global tool to manage all other global tools
 > - `dotnet-tools Install [id]` to install global tools
 > - `dotnet-tools Uninstall [id]` to uninstall global tools
 >
+> To install global tool from a local source path, type commands :
+> - `dotnet tool install -g --configfile .\Nugets\local.config DotnetToolsCli --version "*-*" --ignore-failed-sources`
+>
 > To install global tool from [nuget source](https://www.nuget.org/packages/DotnetToolsCli), type these command :
 > - For stable version : `dotnet tool install -g DotnetToolsCli --ignore-failed-sources`
 > - For prerelease version : `dotnet tool install -g DotnetToolsCli --version "*-*" --ignore-failed-sources`

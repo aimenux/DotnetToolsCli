@@ -41,10 +41,12 @@ public class GlobalToolService : IGlobalToolService
 
     public async Task<ICollection<GlobalTool>> SearchGlobalToolsAsync(GlobalToolsParameters parameters, CancellationToken cancellationToken = default)
     {
+        const int take = 1000;
         const string name = @"dotnet";
+        var pattern = parameters.Pattern;
         var arguments = !string.IsNullOrWhiteSpace(parameters.Pattern)
-            ? $"tool search {parameters.Pattern} --prerelease --take 1000"
-            : $"tool search {_randomHelper.RandomCharacter()} --prerelease --take 1000";
+            ? $"tool search {parameters.Pattern} --prerelease --take {take}"
+            : $"tool search {_randomHelper.RandomCharacter()} --prerelease --take {take}";
         var queue = new ConcurrentQueue<GlobalTool>();
         await _processHelper.RunProcessAsync(name, arguments, (_, args) =>
         {
@@ -55,8 +57,10 @@ public class GlobalToolService : IGlobalToolService
         }, cancellationToken);
 
         var globalTools = queue
+            .Where(x => pattern is null || x.IsMatchingPattern(pattern))
             .OrderBy(x => Guid.NewGuid())
             .Take(parameters.MaxItems)
+            .OrderBy(x => x.Id)
             .ToList();
         return globalTools;
     }

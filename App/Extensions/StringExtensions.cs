@@ -6,12 +6,13 @@ public static class StringExtensions
 {
     public static bool IgnoreCaseEquals(this string input, string key)
     {
-        return input.Equals(key, StringComparison.OrdinalIgnoreCase);
+        return string.Equals(input, key, StringComparison.OrdinalIgnoreCase);
     }
 
     public static bool IgnoreCaseContains(this string input, string key)
     {
-        return input.Contains(key, StringComparison.OrdinalIgnoreCase);
+        if (input is null || key is null) return input == key;
+        return input.Contains(key, StringComparison.OrdinalIgnoreCase) == true;
     }
 
     public static string GetFormattedJson(this string json)
