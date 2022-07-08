@@ -41,25 +41,31 @@ public class GlobalToolService : IGlobalToolService
 
     public async Task<ICollection<GlobalTool>> SearchGlobalToolsAsync(GlobalToolsParameters parameters, CancellationToken cancellationToken = default)
     {
-        const int take = 1000;
+        const int size = 20;
         const string name = @"dotnet";
+        var max = parameters.MaxItems;
         var pattern = parameters.Pattern;
-        var arguments = !string.IsNullOrWhiteSpace(parameters.Pattern)
-            ? $"tool search {parameters.Pattern} --prerelease --take {take}"
-            : $"tool search {_randomHelper.RandomCharacter()} --prerelease --take {take}";
-        var queue = new ConcurrentQueue<GlobalTool>();
-        await _processHelper.RunProcessAsync(name, arguments, (_, args) =>
-        {
-            var message = args.Data;
-            var globalTool = ExtractGlobalTool(message);
-            if (globalTool == null) return;
-            queue.Enqueue(globalTool);
-        }, cancellationToken);
+        var cache = new ConcurrentDictionary<string, GlobalTool>(StringComparer.OrdinalIgnoreCase);
 
-        var globalTools = queue
+        for (var skip = 0; skip < max; skip += size)
+        {
+            var arguments = !string.IsNullOrWhiteSpace(pattern)
+                ? $"tool search {parameters.Pattern} --prerelease --take {size} --skip {skip}"
+                : $"tool search {_randomHelper.RandomCharacter()} --prerelease --take {size} --skip {skip}";
+
+            await _processHelper.RunProcessAsync(name, arguments, (_, args) =>
+            {
+                var message = args.Data;
+                var globalTool = ExtractGlobalTool(message);
+                if (globalTool == null) return;
+                cache.TryAdd(globalTool.Id, globalTool);
+            }, cancellationToken);
+        }
+
+        var globalTools = cache.Values
             .Where(x => pattern is null || x.IsMatchingPattern(pattern))
-            .OrderBy(x => Guid.NewGuid())
-            .Take(parameters.MaxItems)
+            .OrderBy(_ => Guid.NewGuid())
+            .Take(max)
             .OrderBy(x => x.Id)
             .ToList();
         return globalTools;

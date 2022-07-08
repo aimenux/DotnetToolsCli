@@ -89,6 +89,13 @@ public class ConsoleHelper : IConsoleHelper
             {
                 table.Caption(caption);
             }
+            else
+            {
+                if (count >= 100)
+                {
+                    table.Caption($"[grey]Found {count} global tool(s)[/]");
+                }
+            }
 
             foreach (var globalTool in globalTools)
             {
@@ -112,6 +119,13 @@ public class ConsoleHelper : IConsoleHelper
             if (!string.IsNullOrWhiteSpace(caption))
             {
                 table.Caption(caption);
+            }
+            else
+            {
+                if (count >= 100)
+                {
+                    table.Caption($"[grey]Found {count} global tool(s)[/]");
+                }
             }
 
             foreach (var globalTool in globalTools)

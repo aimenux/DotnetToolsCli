@@ -19,7 +19,7 @@ public class SearchCommand : AbstractCommand
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    [Range(1, 100)]
+    [Range(1, 1000)]
     [Option("-m|--max", "MaxItems.", CommandOptionType.SingleValue)]
     public int MaxItems { get; set; } = 30;
 
