@@ -48,7 +48,7 @@ public class UpdateCommand : AbstractCommand
             return false;
         }
 
-        if (!string.IsNullOrEmpty(NugetConfigFile) && File.Exists(NugetConfigFile))
+        if (!string.IsNullOrEmpty(NugetConfigFile) && !File.Exists(NugetConfigFile))
         {
             _logger.LogError("Nuget file '{name}' does not exist", NugetConfigFile);
             return false;
