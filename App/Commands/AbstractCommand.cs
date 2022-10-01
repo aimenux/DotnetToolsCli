@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using App.Helpers;
+﻿using App.Helpers;
 using McMaster.Extensions.CommandLineUtils;
 using Serilog.Events;
 
@@ -59,12 +58,4 @@ public abstract class AbstractCommand
     protected virtual bool HasValidArguments() => true;
 
     protected virtual bool IsVerboseLoggingEnabled() => false;
-
-    protected static string GetVersion(Type type)
-    {
-        return type
-            .Assembly
-            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-            ?.InformationalVersion;
-    }
 }

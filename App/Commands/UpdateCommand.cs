@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 namespace App.Commands;
 
 [Command(Name = "Update", FullName = "Update global tools", Description = "Update global tools.")]
-[VersionOptionFromMember(MemberName = nameof(GetVersion))]
 public class UpdateCommand : AbstractCommand
 {
     private readonly IGlobalToolService _globalToolService;
@@ -18,7 +17,7 @@ public class UpdateCommand : AbstractCommand
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    [Option("-v|--verbose", "Verbose logging.", CommandOptionType.NoValue)]
+    [Option("--verbose", "Verbose logging.", CommandOptionType.NoValue)]
     public bool Verbose { get; set; }
 
     [Option("-p|--pattern", "Pattern matching.", CommandOptionType.SingleValue)]
@@ -58,6 +57,4 @@ public class UpdateCommand : AbstractCommand
     }
 
     protected override bool IsVerboseLoggingEnabled() => Verbose;
-
-    private static string GetVersion() => GetVersion(typeof(UpdateCommand));
 }

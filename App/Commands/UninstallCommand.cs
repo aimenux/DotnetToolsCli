@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 namespace App.Commands;
 
 [Command(Name = "Uninstall", FullName = "Uninstall global tools", Description = "Uninstall global tools.")]
-[VersionOptionFromMember(MemberName = nameof(GetVersion))]
 public class UninstallCommand : AbstractCommand
 {
     private readonly IGlobalToolService _globalToolService;
@@ -19,7 +18,7 @@ public class UninstallCommand : AbstractCommand
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    [Option("-v|--verbose", "Verbose logging.", CommandOptionType.NoValue)]
+    [Option("--verbose", "Verbose logging.", CommandOptionType.NoValue)]
     public bool Verbose { get; set; }
 
     [Required]
@@ -52,6 +51,4 @@ public class UninstallCommand : AbstractCommand
     }
 
     protected override bool IsVerboseLoggingEnabled() => Verbose;
-
-    private static string GetVersion() => GetVersion(typeof(UninstallCommand));
 }

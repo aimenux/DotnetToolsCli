@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 namespace App.Commands;
 
 [Command(Name = "Search", FullName = "Search global tools", Description = "Search global tools.")]
-[VersionOptionFromMember(MemberName = nameof(GetVersion))]
 public class SearchCommand : AbstractCommand
 {
     private readonly IGlobalToolService _globalToolService;
@@ -55,6 +54,4 @@ public class SearchCommand : AbstractCommand
         _logger.LogError($"Export directory '{ExportDirectory}' does not exist");
         return false;
     }
-
-    private static string GetVersion() => GetVersion(typeof(SearchCommand));
 }

@@ -1,4 +1,5 @@
-﻿using App.Helpers;
+﻿using System.Reflection;
+using App.Helpers;
 using McMaster.Extensions.CommandLineUtils;
 using static App.Extensions.PathExtensions;
 
@@ -32,5 +33,11 @@ public class MainCommand : AbstractCommand
         return Task.CompletedTask;
     }
 
-    private static string GetVersion() => GetVersion(typeof(MainCommand));
+    private static string GetVersion()
+    {
+        return typeof(MainCommand)
+            .Assembly
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+            .InformationalVersion;
+    }
 }

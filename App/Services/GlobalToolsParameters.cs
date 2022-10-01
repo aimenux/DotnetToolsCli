@@ -4,6 +4,10 @@ public class GlobalToolsParameters
 {
     public ICollection<string> Ids { get; set; }
 
+    public bool Force { get; set; }
+
+    public string Version { get; set; }
+
     public string Pattern { get; set; }
 
     public int MaxItems { get; set; }

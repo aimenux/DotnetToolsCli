@@ -74,11 +74,20 @@ public class GlobalToolService : IGlobalToolService
     public async Task<ICollection<GlobalTool>> InstallGlobalToolsAsync(GlobalToolsParameters parameters, CancellationToken cancellationToken)
     {
         const string name = @"dotnet";
+        var file = parameters.NugetConfigFile;
+        var version = parameters.Version ?? "*-*";
         var arguments = File.Exists(parameters.NugetConfigFile)
-            ? $"tool install -g {{0}} --version *-* --ignore-failed-sources --configfile {parameters.NugetConfigFile}"
-            : @"tool install -g {0} --version *-* --ignore-failed-sources";
+            ? $"tool install -g {{0}} --version {version} --ignore-failed-sources --configfile {file}"
+            : $"tool install -g {{0}} --version {version} --ignore-failed-sources";
 
-        _logger.LogEmptyLineWhenLogLevelIsEnabled(LogLevel.Information);
+        if (parameters.Force)
+        {
+            await UninstallGlobalToolsAsync(parameters, cancellationToken);
+        }
+        else
+        {
+            _logger.LogEmptyLineWhenLogLevelIsEnabled(LogLevel.Information);
+        }
 
         var ids = parameters.Ids.Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
         foreach (var id in ids)

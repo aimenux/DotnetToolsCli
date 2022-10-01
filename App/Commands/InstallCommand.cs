@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 namespace App.Commands;
 
 [Command(Name = "Install", FullName = "Install global tools", Description = "Install global tools.")]
-[VersionOptionFromMember(MemberName = nameof(GetVersion))]
 public class InstallCommand : AbstractCommand
 {
     private readonly IGlobalToolService _globalToolService;
@@ -19,11 +18,17 @@ public class InstallCommand : AbstractCommand
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    [Option("-v|--verbose", "Verbose logging.", CommandOptionType.NoValue)]
+    [Option("--verbose", "Verbose logging.", CommandOptionType.NoValue)]
     public bool Verbose { get; set; }
 
     [Option("-f|--file", "Nuget configuration file to use.", CommandOptionType.SingleValue)]
     public string NugetConfigFile { get; set; }
+
+    [Option("-v|--version", "Tool Version.", CommandOptionType.SingleValue)]
+    public string Version { get; set; }
+
+    [Option("--force", "Force installation.", CommandOptionType.NoValue)]
+    public bool Force { get; set; }
 
     [Required]
     [Argument(0, nameof(Ids), "Tool(s) Id(s) or ExportFile(s)")]
@@ -36,6 +41,8 @@ public class InstallCommand : AbstractCommand
         var parameters = new GlobalToolsParameters
         {
             Ids = ids,
+            Force = Force,
+            Version = Version,
             NugetConfigFile = NugetConfigFile
         };
 
@@ -62,6 +69,4 @@ public class InstallCommand : AbstractCommand
     }
 
     protected override bool IsVerboseLoggingEnabled() => Verbose;
-
-    private static string GetVersion() => GetVersion(typeof(InstallCommand));
 }

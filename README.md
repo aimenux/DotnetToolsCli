@@ -24,6 +24,8 @@ Providing a net global tool to manage all other global tools
 > - `dotnet-tools Update` to update installed global tools
 > - `dotnet-tools Update -p [pattern]` to update installed global tools matching pattern
 > - `dotnet-tools Install [id]` to install global tools
+> - `dotnet-tools Install [id] --force` to force install global tools
+> - `dotnet-tools Install [id] --version [version]` to install global tools with some version
 > - `dotnet-tools Uninstall [id]` to uninstall global tools
 >
 > To install global tool from a local source path, type commands :

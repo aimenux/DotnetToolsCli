@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 namespace App.Commands;
 
 [Command(Name = "List", FullName = "List global tools", Description = "List global tools.")]
-[VersionOptionFromMember(MemberName = nameof(GetVersion))]
 public class ListCommand : AbstractCommand
 {
     private readonly IGlobalToolService _globalToolService;
@@ -49,6 +48,4 @@ public class ListCommand : AbstractCommand
         _logger.LogError($"Export directory '{ExportDirectory}' does not exist");
         return false;
     }
-
-    private static string GetVersion() => GetVersion(typeof(ListCommand));
 }
