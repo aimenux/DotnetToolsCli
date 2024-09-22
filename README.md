@@ -7,7 +7,7 @@ Providing a net global tool to manage all other global tools
 
 > In this repo, i m building a global tool that allows to manage all other global tools.
 >
-> The tool is based on multiple sub commmands :
+> The tool is based on multiple sub commands :
 > - Use sub command `List` to list installed global tools
 > - Use sub command `Search` to search global tools published on [nuget](https://www.nuget.org/packages?packagetype=dotnettool)
 > - Use sub command `Update` to update installed global tools
@@ -40,4 +40,4 @@ Providing a net global tool to manage all other global tools
 >
 >
 
-**`Tools`** : vs22, net 6.0, command-line, spectre-console
+**`Tools`** : net 8.0, command-line, spectre-console

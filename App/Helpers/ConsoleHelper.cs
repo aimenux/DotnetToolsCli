@@ -5,11 +5,11 @@ using Spectre.Console;
 
 namespace App.Helpers;
 
-public class ConsoleHelper : IConsoleHelper
+public sealed class ConsoleHelper : IConsoleHelper
 {
     private readonly IRandomHelper _randomHelper;
 
-    protected ConsoleHelper()
+    private ConsoleHelper()
     {
         Console.OutputEncoding = Encoding.UTF8;
     }
@@ -22,7 +22,7 @@ public class ConsoleHelper : IConsoleHelper
     public void RenderTitle(string text)
     {
         AnsiConsole.WriteLine();
-        AnsiConsole.Write(new FigletText(text).LeftAligned());
+        AnsiConsole.Write(new FigletText(text));
         AnsiConsole.WriteLine();
     }
 
