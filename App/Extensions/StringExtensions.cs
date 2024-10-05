@@ -14,6 +14,14 @@ public static class StringExtensions
         if (input is null || key is null) return input == key;
         return input.Contains(key, StringComparison.OrdinalIgnoreCase) == true;
     }
+    
+    public static bool IgnoreCaseContains(this string input, string[] keys)
+    {
+        if (input is null && keys is null) return true;
+        if (input is null) return false;
+        if (keys is null) return false;
+        return keys.All(input.IgnoreCaseContains);
+    }
 
     public static string GetFormattedJson(this string json)
     {

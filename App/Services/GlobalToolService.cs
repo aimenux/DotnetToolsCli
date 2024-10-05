@@ -154,6 +154,7 @@ public class GlobalToolService : IGlobalToolService
     {
         if (string.IsNullOrWhiteSpace(message)) return null;
         if (message.IgnoreCaseContains("Package ID")) return null;
+        if (message.IgnoreCaseContains(["Package", "Version", "Command"])) return null;
 
         const string separator = "  ";
         var parts = message
