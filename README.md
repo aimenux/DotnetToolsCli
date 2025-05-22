@@ -3,10 +3,10 @@
 
 # DotnetToolsCli
 ```
-Providing a net global tool to manage all other global tools
+Providing a dotnet cli tool to manage dotnet global tools
 ```
 
-> In this repo, i m building a global tool that allows to manage all other global tools.
+> In this repo, i m building a cli tool that allows to manage dotnet global tools.
 >
 > The tool is based on multiple sub commands :
 > - Use sub command `List` to list installed global tools
@@ -29,16 +29,16 @@ Providing a net global tool to manage all other global tools
 > - `dotnet-tools Install [id] --version [version]` to install global tools with some version
 > - `dotnet-tools Uninstall [id]` to uninstall global tools
 >
-> To install global tool from a local source path, type commands :
+> To install cli tool from a local source path, type commands :
 > - `dotnet tool install -g --configfile .\Nugets\local.config DotnetToolsCli --version "*-*" --ignore-failed-sources`
 >
-> To install global tool from [nuget source](https://www.nuget.org/packages/DotnetToolsCli), type these command :
+> To install cli tool from [nuget source](https://www.nuget.org/packages/DotnetToolsCli), type this command :
 > - For stable version : `dotnet tool install -g DotnetToolsCli --ignore-failed-sources`
 > - For prerelease version : `dotnet tool install -g DotnetToolsCli --version "*-*" --ignore-failed-sources`
 >
-> To uninstall global tool, type these command :
+> To uninstall cli tool, type this command :
 > - `dotnet tool uninstall -g DotnetToolsCli`
 >
 >
 
-**`Tools`** : net 8.0, command-line, spectre-console
+**`Tools`** : net 9.0, command-line, spectre-console
